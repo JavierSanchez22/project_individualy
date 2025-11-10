@@ -12,10 +12,15 @@ public class DifficultyManager : MonoBehaviour {
 	private GameStateManager _gameState;
 	private SpawnManager _obstacleSpawnManager;
 
+	private float _currentBaseSpeed;
+	private float _currentSpeedMultiplier = 1f;
+
 	private void Start() {
 		_gameState = FindObjectOfType<GameStateManager>();
 		_obstacleSpawnManager = FindObjectOfType<SpawnManager>(); 
-		PlayerSpeed = _initialPlayerSpeed;
+		
+		_currentBaseSpeed = _initialPlayerSpeed;
+		PlayerSpeed = _currentBaseSpeed * _currentSpeedMultiplier;
 	}
 
 	private void LateUpdate() {
@@ -25,8 +30,15 @@ public class DifficultyManager : MonoBehaviour {
 	}
 
 	public void IncreaseDificulty() {
-		PlayerSpeed += _speedIncrease;
+		_currentBaseSpeed += _speedIncrease;
+		PlayerSpeed = _currentBaseSpeed * _currentSpeedMultiplier;
+        
 		if (_obstacleSpawnManager != null && _obstacleSpawnManager.repeatRate > 1f)
 			_obstacleSpawnManager.repeatRate -= _spawnRateIncrease;
+	}
+    
+	public void SetSpeedMultiplier(float multiplier) {
+		_currentSpeedMultiplier = multiplier;
+		PlayerSpeed = _currentBaseSpeed * _currentSpeedMultiplier; 
 	}
 }

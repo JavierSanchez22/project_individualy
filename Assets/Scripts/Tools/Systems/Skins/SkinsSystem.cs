@@ -9,7 +9,10 @@ public class SkinsSystem : MonoBehaviour {
 	public static event Action OnEndOfChangeSkin;
 	public static bool isCurrentSkinUnlocked = true;
 
-	[SerializeField] private Renderer _playerRenderer;
+    // --- LÍNEA MODIFICADA ---
+	[SerializeField] private GameObject _playerObject;
+    // --- FIN DE LA MODIFICACIÓN ---
+
 	[SerializeField] private List<Skin> _skins = new List<Skin>();
 	[SerializeField] private GameObject _unlockGroup;
 	[SerializeField] private Button _unlockButton;
@@ -18,6 +21,8 @@ public class SkinsSystem : MonoBehaviour {
 	private int _currentIndex = 0;
 	private CurrencyManager _currencyManager;
 	private ScoreManager _scoreManager;
+	private SkinAbility _currentAbility;
+    private Renderer _playerRenderer; // Lo encontraremos automáticamente
 
 	private void OnEnable() => MainMenuController.OnChangeSkin += OnChangeSkin;
 	private void OnDisable() => MainMenuController.OnChangeSkin -= OnChangeSkin;
@@ -25,6 +30,12 @@ public class SkinsSystem : MonoBehaviour {
 	private void Start() {
 		_currencyManager = FindObjectOfType<CurrencyManager>();
 		_scoreManager = FindObjectOfType<ScoreManager>();
+        
+        // --- LÍNEA NUEVA ---
+        if (_playerObject != null) {
+            _playerRenderer = _playerObject.GetComponentInChildren<Renderer>();
+        }
+        // --- FIN DE LÍNEA NUEVA ---
 		
 		_currentIndex = 0;
 		HandleUnlockGroup();
@@ -32,6 +43,12 @@ public class SkinsSystem : MonoBehaviour {
 		SkinsSaveData data = SaveSystem.LoadSkins();
 		if (data != null)
 			AssignSkinsSaveData(data);
+		
+		if (_skins.Count > 0 && _skins[0].ability != null && _skins[0].unlockCondition.isUnlocked) {
+			_currentAbility = _skins[0].ability;
+            // --- LÍNEA MODIFICADA ---
+			_currentAbility.ApplyAbility(_playerObject);
+		}
 	}
 
 
@@ -56,6 +73,8 @@ public class SkinsSystem : MonoBehaviour {
 		UpdateIsCurrentSkinUnlocked();
 
 		SaveSystem.SaveSkins(GetUnlockedArray());
+
+		ApplyCurrentSkinAbility();
 	}
 
 	private void AssignSkinsSaveData(SkinsSaveData data) {
@@ -71,13 +90,29 @@ public class SkinsSystem : MonoBehaviour {
 	}
 
 	private void OnChangeSkin(bool direction) {
+		if (_currentAbility != null) {
+            // --- LÍNEA MODIFICADA ---
+			_currentAbility.RemoveAbility(_playerObject);
+			_currentAbility = null;
+		}
+
 		WalkOnSkinList(direction);
 		HandleUnlockGroup();
+
+		ApplyCurrentSkinAbility();
 
 		if (_playerRenderer != null)
 			_playerRenderer.materials = _skins[_currentIndex].skinsMaterials;
 
 		OnEndOfChangeSkin?.Invoke();
+	}
+
+	private void ApplyCurrentSkinAbility() {
+		if (_skins[_currentIndex].ability != null && _skins[_currentIndex].unlockCondition.isUnlocked) {
+			_currentAbility = _skins[_currentIndex].ability;
+            // --- LÍNEA MODIFICADA ---
+			_currentAbility.ApplyAbility(_playerObject);
+		}
 	}
 
 	private void WalkOnSkinList(bool direction) {

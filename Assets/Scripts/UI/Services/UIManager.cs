@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class UIManager : MonoBehaviour {
 	
@@ -8,6 +9,7 @@ public class UIManager : MonoBehaviour {
 	[SerializeField] private GameObject _gameUI;
 	[SerializeField] private GameObject _pauseMenu;
 	[SerializeField] private GameObject _gameOverMenu;
+    [SerializeField] private GameObject _loadingScreen;
 
 	private GameStateManager _gameStateManager;
 
@@ -27,11 +29,25 @@ public class UIManager : MonoBehaviour {
 
 	private void Start() {
 		_gameStateManager = FindObjectOfType<GameStateManager>();
-		
-		// Estado inicial al cargar la escena
-		SetMenusVisibility(true, false, false);
+        
+        // El Start AHORA ESTÁ CASI VACÍO.
+        // El Bootstrapper tiene el control.
+        // Nos aseguramos de que todo esté apagado EXCEPTO el loading screen
+        // (que se supone está encendido por defecto en la escena).
+        SetMenuVisibility(_initMenu, false);
 		_gameUI.SetActive(false);
+		SetMenuVisibility(_pauseMenu, false);
+		SetMenuVisibility(_gameOverMenu, false);
 	}
+	
+    // --- ¡MÉTODO NUEVO! ---
+    // El Bootstrapper llama a esto cuando la carga termina.
+    public void ShowMainMenu() {
+        if (_loadingScreen != null) {
+            _loadingScreen.SetActive(false);
+        }
+        SetMenuVisibility(_initMenu, true);
+    }
 	
 	private void Update() {
 		if (_gameStateManager != null) {
@@ -49,7 +65,7 @@ public class UIManager : MonoBehaviour {
 
 	private void OnResume() {
 		if (_gameStateManager != null) {
-			if (_gameStateManager.IsGamePaused) // Evita que se muestre el InitMenu después de un Game Over
+			if (_gameStateManager.IsGamePaused)
 				SetMenuVisibility(_initMenu, false);
 			else if (!_gameStateManager.IsGameRunning)
 				SetMenuVisibility(_initMenu, true);

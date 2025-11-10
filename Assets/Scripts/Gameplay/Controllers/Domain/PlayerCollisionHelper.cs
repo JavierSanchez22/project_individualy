@@ -2,25 +2,34 @@ using UnityEngine;
 
 public static class PlayerCollisionHelper {
 
-	public static void HandleObstacleCollision(Collision other, float angleThreshold) {
+	public static bool HandleObstacleCollision(Collision other, float angleThreshold) {
 		if (other.gameObject.CompareTag("Player")) {
 			for (int i = 0; i < other.contacts.Length; i++) {
 				float currentAngleRefUp = Vector3.Angle(other.contacts[i].normal, Vector3.up);
 				float currentAngleRefDown = Vector3.Angle(other.contacts[i].normal, Vector3.down);
 
 				if (currentAngleRefUp <= angleThreshold || currentAngleRefDown <= angleThreshold) {
-                    // --- INICIO DE LA CORRECCIÓN ---
-                    // Buscamos PlayerMovement, no PlayerController
 					PlayerMovement movement = other.gameObject.GetComponent<PlayerMovement>();
 					if (movement != null) {
 						movement.RechargeJumps();
 					}
-                    // --- FIN DE LA CORRECCIÓN ---
-					break;
+					return false;
 				}
-				else
-					Object.FindObjectOfType<GameStateManager>().GameOver(Sound.Type.Death);
+				else {
+					GameStateManager gsm = Object.FindObjectOfType<GameStateManager>();
+					if (gsm != null) {
+						if (gsm.HasExtraLife) {
+							gsm.SetExtraLife(false);
+							AudioManager.Instance.PlaySoundOneShot(Sound.Type.Switch, 2);
+							return true; // <-- Devuelve TRUE (destruir obstáculo)
+						} else {
+							gsm.GameOver(Sound.Type.Death);
+							return false; // El juego terminó, no importa
+						}
+					}
+				}
 			}
 		}
+		return false;
 	}
 }

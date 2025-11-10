@@ -2,20 +2,23 @@ using System;
 using UnityEngine;
 
 public class PlayerInput : MonoBehaviour {
-	// Eventos que los otros scripts (Movimiento, Visuales) escucharán
 	public event Action OnJumpPressed;
 	public event Action OnSwitchPressed;
 	public event Action<bool> OnJumpHeld;
 
 	private bool _isPaused = false;
 
+    // --- ¡MÉTODO NUEVO! ---
+	public void ResetState() {
+		_isPaused = false;
+	}
+    // --- FIN DEL MÉTODO NUEVO ---
+
 	private void OnEnable() {
-		// Escucha los inputs físicos
 		InputsController.OnJump += HandleJump;
 		InputsController.OnSwitch += HandleSwitch;
 		InputsController.OnHoldingJump += HandleHold;
 
-		// Escucha los eventos del juego
 		GameEvents.OnPause += () => _isPaused = true;
 		GameEvents.OnResume += () => _isPaused = false;
 		GameEvents.OnGameOver += (isNewBest) => _isPaused = true;

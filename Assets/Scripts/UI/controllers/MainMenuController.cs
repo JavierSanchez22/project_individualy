@@ -16,6 +16,8 @@ public class MainMenuController : MonoBehaviour {
 	[SerializeField] private Button _unlockButton;
 
 	private GameStateManager _gameStateManager;
+    private ScoreManager _scoreManager;
+    private CurrencyManager _currencyManager;
 
 	private void OnEnable() {
 		GameEvents.OnAssignSaveData += UpdateSavedPoints;
@@ -31,6 +33,25 @@ public class MainMenuController : MonoBehaviour {
 
 	private void Start() {
 		_gameStateManager = FindObjectOfType<GameStateManager>();
+        _scoreManager = FindObjectOfType<ScoreManager>();
+        _currencyManager = FindObjectOfType<CurrencyManager>();
+
+        // Esto arregla el bug de "Score 0". Carga los datos que Bootstrapper
+        // acaba de poner en los nuevos managers.
+        if (_scoreManager != null) {
+            UpdateBestScore(_scoreManager.BestScore);
+        }
+        if (_currencyManager != null) {
+            UpdateCoins(_currencyManager.Coins);
+        }
+        
+        // --- ¡AQUÍ ESTÁ LA CORRECCIÓN DEL BOTÓN PLAY! ---
+        // Conectamos el botón "Play" por código CADA VEZ que se carga la escena.
+        _playButton.onClick.RemoveAllListeners();
+        if (_gameStateManager != null) {
+             _playButton.onClick.AddListener(_gameStateManager.Play);
+             _playButton.onClick.AddListener(PlayButtonClick); // Añade el sonido
+        }
 	}
 
 	private void Update() {

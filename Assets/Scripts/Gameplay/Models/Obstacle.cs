@@ -12,8 +12,11 @@ public class Obstacle : Hitable {
 		if ((other.gameObject.CompareTag("Hitable Destroyer") || other.gameObject.CompareTag("Collapse Destroyer")) && !isReleased)
 			_killAction(this);
 		
-        // Esta línea reemplaza el código de colisión duplicado
-		PlayerCollisionHelper.HandleObstacleCollision(other, _angleThreshold);
+        // --- LÍNEA MODIFICADA ---
+		bool shouldObstacleDie = PlayerCollisionHelper.HandleObstacleCollision(other, _angleThreshold);
+        if (shouldObstacleDie && !isReleased) {
+            _killAction(this);
+        }
 	}
 
 	public override Vector3 GenerateRandomPosition(float horizontalPosition) {

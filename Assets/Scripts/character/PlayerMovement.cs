@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour {
 	private const float _GROUND_CHECK_RADIUS = .2f;
 
 	[Header("Movement Settings")]
-	[SerializeField] private float _jumpForce = 10f;
+	[SerializeField] private float _baseJumpForce = 10f;
 	[SerializeField] private float _lowJumpMultiplier = 2f;
 	[SerializeField] private float _fallMultiplier = 2.5f;
 
@@ -25,6 +25,10 @@ public class PlayerMovement : MonoBehaviour {
 	private float _airTime = 0f;
 	private int _gravityDirection = 1;
 	private int _jumps = 1;
+	private int _maxJumps = 1;
+    
+    private float _currentJumpMultiplier = 1f;
+    private float _currentJumpForce => _baseJumpForce * _currentJumpMultiplier;
 
 	private GameStateManager _gameStateManager;
 
@@ -63,8 +67,6 @@ public class PlayerMovement : MonoBehaviour {
 		OnAir();
 	}
 
-    // --- MÉTODOS DE EVENTOS "BLINDADOS" ---
-
 	private void OnGameOver(bool isNewBest) {
 		if (this == null) return;
 		PlayerDeath();
@@ -86,11 +88,9 @@ public class PlayerMovement : MonoBehaviour {
 		ResetGravity();
 	}
 
-    // --- FIN DE MÉTODOS DE EVENTOS "BLINDADOS" ---
-
 	private void Jump() {
 		if (_jumps > 0 && _gameStateManager.IsGamePlayable) {
-			_rigidbody.velocity = Vector3.up * _jumpForce * _gravityDirection;
+			_rigidbody.velocity = Vector3.up * _currentJumpForce * _gravityDirection;
 			AudioManager.Instance.PlaySoundOneShot(Sound.Type.Jump, 2);
 			_jumps--;
 		}
@@ -103,10 +103,25 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	public void RechargeJumps() {
-		_jumps = 1;
+		_jumps = _maxJumps;
+	}
+    
+	public void SetJumpMultiplier(float multiplier) {
+		_currentJumpMultiplier = multiplier;
+	}
+    
+    public void AddExtraJumps(int amount) {
+		_maxJumps += amount;
+		RechargeJumps();
 	}
 
-	private void HandleGravity() {
+	public void RemoveExtraJumps(int amount) {
+		_maxJumps -= amount;
+		if (_maxJumps < 1) _maxJumps = 1;
+		RechargeJumps();
+	}
+    
+    private void HandleGravity() {
 		if (_gravityDirection == 1) {
 			if (_rigidbody.velocity.y < 0 && !_isHoldingJump)
 				ApplyCustomGravityFall(_rigidbody);
@@ -145,13 +160,10 @@ public class PlayerMovement : MonoBehaviour {
 
 	private void InvertPosition() {
 		AudioManager.Instance.PlaySoundOneShot(Sound.Type.Switch, 2);
-
 		transform.Rotate(new Vector3(0, 0, 180), Space.Self);
 		transform.position = new Vector3(transform.position.x, transform.position.y * -1, transform.position.z);
-
 		if (_gameStateManager.IsGamePlayable)
 			InvertGravity();
-
 		RechargeJumps();
 	}
 

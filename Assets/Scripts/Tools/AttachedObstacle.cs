@@ -5,7 +5,10 @@ public class AttachedObstacle : MonoBehaviour {
 	[SerializeField] private float _angleThreshold = 40f;
 
 	private void OnCollisionEnter(Collision other) {
-        // Esta línea reemplaza el código de colisión duplicado
-		PlayerCollisionHelper.HandleObstacleCollision(other, _angleThreshold);
+        // --- LÍNEA MODIFICADA ---
+		bool shouldObstacleDie = PlayerCollisionHelper.HandleObstacleCollision(other, _angleThreshold);
+        if (shouldObstacleDie) {
+            Destroy(gameObject); // Este no es "hitable", así que lo destruimos
+        }
 	}
 }

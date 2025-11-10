@@ -41,6 +41,13 @@ public class ScoreManager : MonoBehaviour {
 		ShadowScore = 0;
 	}
 
+    // --- ¡AQUÍ ESTÁ EL CÓDIGO NUEVO! ---
+	public void ResetScore() {
+		Score = 0;
+		ShadowScore = 0;
+	}
+    // --- FIN DEL CÓDIGO NUEVO ---
+
 	public bool CheckForNewBestScore() {
 		if (Score > BestScore) {
 			BestScore = Score;

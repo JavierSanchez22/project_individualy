@@ -6,4 +6,5 @@ using UnityEngine;
 public class Skin {
 	public Material[] skinsMaterials;
 	public Condition unlockCondition;
+	public SkinAbility ability;
 }

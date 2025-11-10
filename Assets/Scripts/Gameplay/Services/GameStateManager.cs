@@ -7,6 +7,8 @@ public class GameStateManager : MonoBehaviour {
 	public bool IsGameRunning { get; private set; }
 	public bool IsGamePaused { get; private set; }
 	public bool IsGamePlayable { get { return (IsGameRunning && !IsGamePaused); } }
+    
+    public bool HasExtraLife { get; private set; } = false;
 
 	[Header("Transitions")]
 	[SerializeField] private Animator _endTransitionAnimator;
@@ -25,11 +27,25 @@ public class GameStateManager : MonoBehaviour {
 		_scoreManager = FindObjectOfType<ScoreManager>();
 		UnfreezeTime();
 	}
+    
+    // --- ¡MÉTODO NUEVO! ---
+    // Este es el "botón de reinicio" que el Bootstrapper usará
+	public void ResetState() {
+		IsGameRunning = false;
+		IsGamePaused = false;
+		_scoreManager?.ResetScore();
+		UnfreezeTime();
+	}
 
-	public void Play() {
+	public void SetExtraLife(bool hasLife) {
+		HasExtraLife = hasLife;
+	}
+    
+    public void Play() {
 		AudioManager.Instance.PlaySound(Sound.Type.BGM1, 1);
 		IsGameRunning = true;
-        IsGamePaused = false; // Nos aseguramos de que no esté pausado
+        IsGamePaused = false;
+        _scoreManager?.ResetScore();
 		GameEvents.InvokePlay();
 		UnfreezeTime();
 	}
@@ -68,13 +84,8 @@ public class GameStateManager : MonoBehaviour {
 	}
 
 	public void PlayAgain() {
-        // --- INICIO DE LA CORRECCIÓN ---
-        // Reseteamos el estado ANTES de recargar la escena.
-        IsGameRunning = false;
-        IsGamePaused = false;
-        // --- FIN DE LA CORRECCIÓN ---
-
-		UnfreezeTime();
+        // Ahora solo llamamos al reinicio y cargamos la escena
+        ResetState();
 		StartCoroutine(ReloadSceneAfterTransition());
 	}
 
@@ -90,7 +101,7 @@ public class GameStateManager : MonoBehaviour {
 	private IEnumerator ContinueAfterFade() {
 		AudioManager.Instance.ResumeTrack(2);
 		IsGameRunning = true;
-        IsGamePaused = false; // Nos aseguramos de que no esté pausado
+        IsGamePaused = false;
 		yield return FadeTransition("in");
 		yield return TransitionedContinue();
 	}
