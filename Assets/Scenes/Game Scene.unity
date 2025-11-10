@@ -240,13 +240,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa44a52279b67d64888e10a86119e98c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _withNewBestScoreGroup: {fileID: 1825896001}
-  _belowBestScoreGroup: {fileID: 1825896001}
+  _withNewBestScoreGroup: {fileID: 598034925}
+  _belowBestScoreGroup: {fileID: 296903911}
   _continueGroup: {fileID: 747870473}
-  _restartButton: {fileID: 237008292}
+  _restartButton: {fileID: 237008294}
   _finalScoreText: {fileID: 518997721}
-  _bestScoreText: {fileID: 382466486}
   _continueMenu: {fileID: 864673377}
+  _newBestScoreText: {fileID: 1877171561}
+  _currentBestScoreText: {fileID: 382466486}
 --- !u!1 &25700559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1179,7 +1180,7 @@ MonoBehaviour:
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 256
-  _jumpForce: 15
+  _baseJumpForce: 15
   _lowJumpMultiplier: 2
   _fallMultiplier: 2.5
   _rigibodyThrowbackForceLeft: 2000
@@ -2116,6 +2117,7 @@ GameObject:
   - component: {fileID: 296903912}
   - component: {fileID: 296903913}
   - component: {fileID: 296903914}
+  - component: {fileID: 296903915}
   m_Layer: 5
   m_Name: Below best Group
   m_TagString: Untagged
@@ -2178,6 +2180,23 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!114 &296903915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296903911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1001 &308422015
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2582,50 +2601,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 337496364}
   m_CullTransparentMesh: 1
---- !u!1 &346913637
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 346913639}
-  - component: {fileID: 346913638}
-  m_Layer: 0
-  m_Name: Ads Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &346913638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 346913637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e6fd1c19f2a5c24c8830794bf0b2289, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &346913639
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 346913637}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.145605, y: 9.90046, z: -40.984158}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &360216610
 GameObject:
   m_ObjectHideFlags: 0
@@ -5171,7 +5146,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0.006225586, y: -213}
+  m_AnchoredPosition: {x: 0.0063476562, y: -213}
   m_SizeDelta: {x: 0.5, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &747870475
@@ -6697,7 +6672,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 346913638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: AdsManager, Assembly-CSharp
         m_MethodName: PlayAd
         m_Mode: 1
@@ -7018,7 +6993,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1092118395
 GameObject:
@@ -8070,19 +8045,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1889075599}
         m_TargetAssemblyTypeName: GameStateManager, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2077938533}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: PlayButtonClick
+        m_MethodName: PlayAgain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9194,7 +9157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26512b01dd521d64bb1c7c6318965b34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerRenderer: {fileID: 612789591}
+  _playerObject: {fileID: 175268675}
   _skins:
   - skinsMaterials:
     - {fileID: 2100000, guid: 900ed1b4b69b7144994f2748ee860c00, type: 2}
@@ -9209,12 +9172,13 @@ MonoBehaviour:
         isConditionByAmount: 0
         isAmountCoin: 0
         targetAmount: 0
+    ability: {fileID: 0}
   - skinsMaterials:
     - {fileID: 2100000, guid: 3bf51660c1a84744cba0e567ce84b7ac, type: 2}
     - {fileID: 2100000, guid: 42cae05abc5fc164b8c6ca971af09b08, type: 2}
     unlockCondition:
-      phrase: Collect 10 coins
-      isUnlocked: 0
+      phrase: Collect 30 coins
+      isUnlocked: 1
       condition:
         m_PersistentCalls:
           m_Calls:
@@ -9233,13 +9197,14 @@ MonoBehaviour:
       conditionByAmount:
         isConditionByAmount: 1
         isAmountCoin: 1
-        targetAmount: 10
+        targetAmount: 30
+    ability: {fileID: 11400000, guid: 0822f947485fc264397ea75d5597b0ca, type: 2}
   - skinsMaterials:
     - {fileID: 2100000, guid: 04865c8e3960a2a448211eb7cc516d5c, type: 2}
     - {fileID: 2100000, guid: 9aa2bac9217cc95458a8b6c912a916e4, type: 2}
     unlockCondition:
-      phrase: Reach score 60
-      isUnlocked: 0
+      phrase: Reach score 500
+      isUnlocked: 1
       condition:
         m_PersistentCalls:
           m_Calls:
@@ -9258,13 +9223,14 @@ MonoBehaviour:
       conditionByAmount:
         isConditionByAmount: 1
         isAmountCoin: 0
-        targetAmount: 60
+        targetAmount: 500
+    ability: {fileID: 11400000, guid: 4a38382de44e16c4e9010ce4fe4fdf7d, type: 2}
   - skinsMaterials:
     - {fileID: 2100000, guid: 518df544da193a94cbd34b459ec1ad81, type: 2}
     - {fileID: 2100000, guid: 149a350287e1d9848b83cc42d25a52a4, type: 2}
     unlockCondition:
-      phrase: Collect 50 coins
-      isUnlocked: 0
+      phrase: Collect 100 coins
+      isUnlocked: 1
       condition:
         m_PersistentCalls:
           m_Calls:
@@ -9283,7 +9249,8 @@ MonoBehaviour:
       conditionByAmount:
         isConditionByAmount: 1
         isAmountCoin: 1
-        targetAmount: 50
+        targetAmount: 100
+    ability: {fileID: 11400000, guid: d03f414e80f1db948b6f16a44b6c5afe, type: 2}
   _unlockGroup: {fileID: 1517124739}
   _unlockButton: {fileID: 1385974671}
   _unlockPhraseText: {fileID: 1200501741}
@@ -10587,6 +10554,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1825896002}
   - component: {fileID: 1825896003}
+  - component: {fileID: 1825896005}
+  - component: {fileID: 1825896004}
   m_Layer: 5
   m_Name: With best Group
   m_TagString: Untagged
@@ -10628,6 +10597,44 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1825896004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825896001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1825896005
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825896001}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 1
+  m_TargetDisplay: 0
 --- !u!1 &1830304892
 GameObject:
   m_ObjectHideFlags: 0
@@ -11177,6 +11184,7 @@ GameObject:
   - component: {fileID: 1889075601}
   - component: {fileID: 1889075600}
   - component: {fileID: 1889075599}
+  - component: {fileID: 1889075605}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -11307,6 +11315,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbda122b265fb544e882893cd14d81f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1889075605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1889075596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b838df25504e4694ebf3af52cf9f641d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1901075977
@@ -12100,19 +12120,19 @@ MonoBehaviour:
   - soundType: 0
     audioClip: {fileID: 0}
   - soundType: 1
-    audioClip: {fileID: 8300000, guid: f5338092cdc9cca4b92488aaa2c7e263, type: 3}
+    audioClip: {fileID: 8300000, guid: 01d000b1b8fe8a24099e7957b656a081, type: 3}
   - soundType: 2
-    audioClip: {fileID: 8300000, guid: 25ba6ee79ee385942ae8641f0355a85a, type: 3}
+    audioClip: {fileID: 8300000, guid: 94e392c817119e94a80c79610d677643, type: 3}
   - soundType: 3
-    audioClip: {fileID: 8300000, guid: 119c0f14654addb4083e32de4025a82b, type: 3}
+    audioClip: {fileID: 8300000, guid: e6d25d84fbac1644791fa0c1eb02c163, type: 3}
   - soundType: 4
-    audioClip: {fileID: 8300000, guid: 7e9ee6dc04a5d40d1a5dfc4beb9865e7, type: 3}
+    audioClip: {fileID: 8300000, guid: 4622c16a9abcbc240ab1915877ffa43e, type: 3}
   - soundType: 5
-    audioClip: {fileID: 8300000, guid: 35fbad8cdde724f11ba6481f1e64af71, type: 3}
+    audioClip: {fileID: 8300000, guid: 07b369f2eef4d964081485c137c80d7a, type: 3}
   - soundType: 6
-    audioClip: {fileID: 8300000, guid: 7bef0064f8567430cac22499c6b93d4f, type: 3}
+    audioClip: {fileID: 8300000, guid: 66ae9c4c3a72e044fbbc2781937cd0ef, type: 3}
   - soundType: 7
-    audioClip: {fileID: 8300000, guid: 52320e590bf774734a288886eba557ba, type: 3}
+    audioClip: {fileID: 8300000, guid: 3ef09c244d4f71f458c72d467484e5b0, type: 3}
   - soundType: 8
     audioClip: {fileID: 8300000, guid: 6395f2a444206384596690e277c4d9a4, type: 3}
   - soundType: 9
@@ -12515,6 +12535,7 @@ MonoBehaviour:
   _gameUI: {fileID: 553483055}
   _pauseMenu: {fileID: 729418405}
   _gameOverMenu: {fileID: 24332071}
+  _loadingScreen: {fileID: 153646178}
 --- !u!114 &2077938534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12663,7 +12684,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _initBestScoreText: {fileID: 598034927}
-  _initCoinsText: {fileID: 216831893}
+  _initCoinsText: {fileID: 691915680}
   _initSettingsButton: {fileID: 1213126511}
   _playButton: {fileID: 581394787}
   _arrowLeftButton: {fileID: 1627407584}
