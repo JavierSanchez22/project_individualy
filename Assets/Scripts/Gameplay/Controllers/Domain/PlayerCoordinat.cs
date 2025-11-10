@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerCoordinat : MonoBehaviour {
 	// Eventos públicos que otros scripts (como la Cámara) escuchan
 	public static event Action OnInvertedPosition;
 	public static event Action OnReachedSwapPoint;
@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private PlayerVisuals _visuals;
 
 	[Header("Scene References")]
-	[SerializeField] private CameraController _camera;
+	[SerializeField] private CameraFollow _camera;
 	[SerializeField] private Transform _swapBridgePoint;
 
 	// Almacenamos la pos/rot inicial para resetear
@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour {
 	
 	private void OnTriggerEnter(Collider other) {
 		// Lógica de colisión que NO es de obstáculos (ej. muertes, triggers)
-		GameStateManager gsm = FindObjectOfType<GameStateManager>();
+		GameState gsm = FindObjectOfType<GameState>();
 		if (gsm == null) return;
 		
 		if (other.gameObject.CompareTag("Finish"))

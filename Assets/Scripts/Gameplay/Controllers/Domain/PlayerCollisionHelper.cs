@@ -16,11 +16,11 @@ public static class PlayerCollisionHelper {
 					return false;
 				}
 				else {
-					GameStateManager gsm = Object.FindObjectOfType<GameStateManager>();
+					GameState gsm = Object.FindObjectOfType<GameState>();
 					if (gsm != null) {
 						if (gsm.HasExtraLife) {
 							gsm.SetExtraLife(false);
-							AudioManager.Instance.PlaySoundOneShot(Sound.Type.Switch, 2);
+							AudioService.Instance.PlaySoundOneShot(Sound.Type.Switch, 2);
 							return true; // <-- Devuelve TRUE (destruir obstáculo)
 						} else {
 							gsm.GameOver(Sound.Type.Death);

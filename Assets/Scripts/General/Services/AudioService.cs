@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour {
-	public static AudioManager Instance;
+public class AudioService : MonoBehaviour {
+	public static AudioService Instance;
 
 	[SerializeField] private List<Sound> _sounds = new List<Sound>();
 

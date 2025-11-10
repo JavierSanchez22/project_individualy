@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PauseMenuController : MonoBehaviour {
+public class PauseMenuView : MonoBehaviour {
 	
 	[Header("Components")]
 	[SerializeField] private Slider _bgmSlider;
@@ -10,8 +10,8 @@ public class PauseMenuController : MonoBehaviour {
 	[SerializeField] private GameObject _lowGraphicsSign;
 
 	private bool _isPointerOnPauseMenu = false;
-	private GameStateManager _gameStateManager;
-	private GraphicsManager _graphicsManager;
+	private GameState _GameState;
+	private GraphicsSettings _GraphicsSettings;
 
 	private void OnEnable() {
 		GameEvents.OnUpdateVolume += UpdateVolumeSlider;
@@ -24,20 +24,20 @@ public class PauseMenuController : MonoBehaviour {
 	}
 
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
-		_graphicsManager = FindObjectOfType<GraphicsManager>();
+		_GameState = FindObjectOfType<GameState>();
+		_GraphicsSettings = FindObjectOfType<GraphicsSettings>();
 	}
 	
 	private void Update() {
-		if (_graphicsManager != null)
-			_lowGraphicsSign.SetActive(_graphicsManager.IsCurrentlyLowGraphics);
+		if (_GraphicsSettings != null)
+			_lowGraphicsSign.SetActive(_GraphicsSettings.IsCurrentlyLowGraphics);
 	}
 
 	public void OnDeselectPauseMenu() {
 		if (!_isPointerOnPauseMenu) {
-			AudioManager.Instance.PlaySoundOneShot(Sound.Type.UIClick, 2);
-			if (_gameStateManager != null)
-				_gameStateManager.Resume();
+			AudioService.Instance.PlaySoundOneShot(Sound.Type.UIClick, 2);
+			if (_GameState != null)
+				_GameState.Resume();
 		}
 	}
 
@@ -53,12 +53,12 @@ public class PauseMenuController : MonoBehaviour {
 	}
 
 	public void OnResumeButton() {
-		if (_gameStateManager != null) {
-			_gameStateManager.Resume();
+		if (_GameState != null) {
+			_GameState.Resume();
 		}
 		
-		if (_graphicsManager != null) {
-			SaveSystem.SaveSettings(AudioManager.Instance.GetTrackVolume(1), AudioManager.Instance.GetTrackVolume(2), _graphicsManager.IsCurrentlyLowGraphics);
+		if (_GraphicsSettings != null) {
+			SaveSystem.SaveSettings(AudioService.Instance.GetTrackVolume(1), AudioService.Instance.GetTrackVolume(2), _GraphicsSettings.IsCurrentlyLowGraphics);
 		}
 	}
 }

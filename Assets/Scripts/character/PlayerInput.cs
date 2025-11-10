@@ -15,9 +15,9 @@ public class PlayerInput : MonoBehaviour {
     // --- FIN DEL MÉTODO NUEVO ---
 
 	private void OnEnable() {
-		InputsController.OnJump += HandleJump;
-		InputsController.OnSwitch += HandleSwitch;
-		InputsController.OnHoldingJump += HandleHold;
+		InputHandler.OnJump += HandleJump;
+		InputHandler.OnSwitch += HandleSwitch;
+		InputHandler.OnHoldingJump += HandleHold;
 
 		GameEvents.OnPause += () => _isPaused = true;
 		GameEvents.OnResume += () => _isPaused = false;
@@ -27,9 +27,9 @@ public class PlayerInput : MonoBehaviour {
 	}
 
 	private void OnDisable() {
-		InputsController.OnJump -= HandleJump;
-		InputsController.OnSwitch -= HandleSwitch;
-		InputsController.OnHoldingJump -= HandleHold;
+		InputHandler.OnJump -= HandleJump;
+		InputHandler.OnSwitch -= HandleSwitch;
+		InputHandler.OnHoldingJump -= HandleHold;
 		
 		GameEvents.OnPause -= () => _isPaused = true;
 		GameEvents.OnResume -= () => _isPaused = false;

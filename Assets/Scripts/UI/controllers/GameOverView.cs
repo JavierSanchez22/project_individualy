@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 using System.Collections;
 using UnityEngine.UI;
 
-public class GameOverScreenController : MonoBehaviour {
+public class GameOverView : MonoBehaviour {
 	
 	[Header("Components")]
 	[SerializeField] private GameObject _withNewBestScoreGroup;
@@ -21,21 +21,21 @@ public class GameOverScreenController : MonoBehaviour {
 	[Tooltip("El texto que dice 'Best score Text' (dentro de Below best Group)")]
 	[SerializeField] private TMP_Text _currentBestScoreText;
 
-	private GameStateManager _gameStateManager;
-	private ScoreManager _scoreManager; // Guardar referencia
+	private GameState _GameState;
+	private ScoreTracker _ScoreTracker; // Guardar referencia
 
 	private void OnEnable() {
 		// En el momento en que este panel se activa (OnEnable se llama
 		// CADA VEZ que el GameObject se activa), buscamos los datos frescos.
 		
-		_gameStateManager = FindObjectOfType<GameStateManager>();
-		_scoreManager = FindObjectOfType<ScoreManager>();
+		_GameState = FindObjectOfType<GameState>();
+		_ScoreTracker = FindObjectOfType<ScoreTracker>();
 
 		// --- ¡AQUÍ ESTÁ LA LÓGICA CORREGIDA! ---
-		if (_scoreManager != null) {
+		if (_ScoreTracker != null) {
 			// Actualizamos los textos de score INMEDIATAMENTE
 			// (sin esperar un evento que podría no llegar)
-			UpdateBestScore(_scoreManager.BestScore);
+			UpdateBestScore(_ScoreTracker.BestScore);
 		}
 
 		GameEvents.OnGameOver += HandleGameOverEvent; 
@@ -54,25 +54,25 @@ public class GameOverScreenController : MonoBehaviour {
 	}
 
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
         
-		if (_restartButton != null && _gameStateManager != null) {
+		if (_restartButton != null && _GameState != null) {
 			_restartButton.onClick.RemoveAllListeners();
-			_restartButton.onClick.AddListener(_gameStateManager.PlayAgain);
+			_restartButton.onClick.AddListener(_GameState.PlayAgain);
 		}
 	}
 
 	private void HandleGameOverEvent(bool isThereNewBestScore) {
-		if (_gameStateManager == null) return;
+		if (_GameState == null) return;
 
 		float willThereBeAContinue = Random.Range(0f, 1f);
-		if (_gameStateManager.isFirstLose || willThereBeAContinue < _gameStateManager.continueChance)
+		if (_GameState.isFirstLose || willThereBeAContinue < _GameState.continueChance)
 			ChangeContinueGroupVisibility(true);
 		else
 			ChangeContinueGroupVisibility(false);
 
-		_gameStateManager.isFirstLose = false;
-		AudioManager.Instance.PauseAllTracks();
+		_GameState.isFirstLose = false;
+		AudioService.Instance.PauseAllTracks();
 
 		StartCoroutine(ShowScoreGroupRoutine(isThereNewBestScore));
 	}

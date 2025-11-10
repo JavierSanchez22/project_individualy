@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class MainMenuController : MonoBehaviour {
+public class MainMenuView : MonoBehaviour {
 	public static event Action<bool> OnChangeSkin;
 
 	[Header("Components")]
@@ -15,9 +15,9 @@ public class MainMenuController : MonoBehaviour {
 	[SerializeField] private Button _arrowRightButton;
 	[SerializeField] private Button _unlockButton;
 
-	private GameStateManager _gameStateManager;
-    private ScoreManager _scoreManager;
-    private CurrencyManager _currencyManager;
+	private GameState _GameState;
+    private ScoreTracker _ScoreTracker;
+    private PlayerWallet _PlayerWallet;
 
 	private void OnEnable() {
 		GameEvents.OnAssignSaveData += UpdateSavedPoints;
@@ -32,38 +32,38 @@ public class MainMenuController : MonoBehaviour {
 	}
 
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
-        _scoreManager = FindObjectOfType<ScoreManager>();
-        _currencyManager = FindObjectOfType<CurrencyManager>();
+		_GameState = FindObjectOfType<GameState>();
+        _ScoreTracker = FindObjectOfType<ScoreTracker>();
+        _PlayerWallet = FindObjectOfType<PlayerWallet>();
 
         // Esto arregla el bug de "Score 0". Carga los datos que Bootstrapper
         // acaba de poner en los nuevos managers.
-        if (_scoreManager != null) {
-            UpdateBestScore(_scoreManager.BestScore);
+        if (_ScoreTracker != null) {
+            UpdateBestScore(_ScoreTracker.BestScore);
         }
-        if (_currencyManager != null) {
-            UpdateCoins(_currencyManager.Coins);
+        if (_PlayerWallet != null) {
+            UpdateCoins(_PlayerWallet.Coins);
         }
         
         // --- ¡AQUÍ ESTÁ LA CORRECCIÓN DEL BOTÓN PLAY! ---
         // Conectamos el botón "Play" por código CADA VEZ que se carga la escena.
         _playButton.onClick.RemoveAllListeners();
-        if (_gameStateManager != null) {
-             _playButton.onClick.AddListener(_gameStateManager.Play);
+        if (_GameState != null) {
+             _playButton.onClick.AddListener(_GameState.Play);
              _playButton.onClick.AddListener(PlayButtonClick); // Añade el sonido
         }
 	}
 
 	private void Update() {
-		if (_gameStateManager == null) return;
+		if (_GameState == null) return;
 		
 		_playButton.interactable = SkinsSystem.isCurrentSkinUnlocked;
-		HandleButtonsInteractibility(_gameStateManager.IsGamePaused);
+		HandleButtonsInteractibility(_GameState.IsGamePaused);
 	}
 
 	public void ChangeSkinByLeft() => OnChangeSkin?.Invoke(false);
 	public void ChangeSkinByRight() => OnChangeSkin?.Invoke(true);
-	public void PlayButtonClick() => AudioManager.Instance.PlaySoundOneShot(Sound.Type.UIClick, 2);
+	public void PlayButtonClick() => AudioService.Instance.PlaySoundOneShot(Sound.Type.UIClick, 2);
 
 	private void UpdateSavedPoints(SaveData data) {
 		UpdateCoins(data.coins);

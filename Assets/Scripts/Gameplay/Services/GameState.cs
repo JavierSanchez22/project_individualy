@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameStateManager : MonoBehaviour {
+public class GameState : MonoBehaviour {
 	public bool IsGameRunning { get; private set; }
 	public bool IsGamePaused { get; private set; }
 	public bool IsGamePlayable { get { return (IsGameRunning && !IsGamePaused); } }
@@ -21,10 +21,10 @@ public class GameStateManager : MonoBehaviour {
 	public bool isFirstLose = true;
 	public float continueChance = .2f;
 
-	private ScoreManager _scoreManager;
+	private ScoreTracker _ScoreTracker;
 
 	private void Start() {
-		_scoreManager = FindObjectOfType<ScoreManager>();
+		_ScoreTracker = FindObjectOfType<ScoreTracker>();
 		UnfreezeTime();
 	}
     
@@ -33,7 +33,7 @@ public class GameStateManager : MonoBehaviour {
 	public void ResetState() {
 		IsGameRunning = false;
 		IsGamePaused = false;
-		_scoreManager?.ResetScore();
+		_ScoreTracker?.ResetScore();
 		UnfreezeTime();
 	}
 
@@ -42,45 +42,45 @@ public class GameStateManager : MonoBehaviour {
 	}
     
     public void Play() {
-		AudioManager.Instance.PlaySound(Sound.Type.BGM1, 1);
+		AudioService.Instance.PlaySound(Sound.Type.BGM1, 1);
 		IsGameRunning = true;
         IsGamePaused = false;
-        _scoreManager?.ResetScore();
+        _ScoreTracker?.ResetScore();
 		GameEvents.InvokePlay();
 		UnfreezeTime();
 	}
 
 	public void Replay() {
-		AudioManager.Instance.ResumeTrack(1);
+		AudioService.Instance.ResumeTrack(1);
 		IsGamePaused = false;
 		GameEvents.InvokeReplay();
 	}
 
 	public void Pause() {
-		AudioManager.Instance.PauseAllTracks();
+		AudioService.Instance.PauseAllTracks();
 		IsGamePaused = true;
 		StartCoroutine(TransitionedPause());
 	}
 
 	public void Resume() {
-		AudioManager.Instance.ResumeAllTracks();
+		AudioService.Instance.ResumeAllTracks();
 		IsGamePaused = false;
 		StartCoroutine(TransitionedResume());
 	}
 
 	public void GameOver(Sound.Type gameOverSound = Sound.Type.None) {
-		AudioManager.Instance.PlaySoundOneShot(gameOverSound, 2);
+		AudioService.Instance.PlaySoundOneShot(gameOverSound, 2);
 		if (!IsGamePlayable)
 			return;
 
 		IsGameRunning = false;
 		IsGamePaused = true;
 
-		bool isNewBest = _scoreManager.CheckForNewBestScore();
+		bool isNewBest = _ScoreTracker.CheckForNewBestScore();
 		GameEvents.InvokeGameOver(isNewBest);
-		GameEvents.InvokeUpdateFinalScore(_scoreManager.Score);
+		GameEvents.InvokeUpdateFinalScore(_ScoreTracker.Score);
 
-		SaveSystem.Save(_scoreManager.BestScore, FindObjectOfType<CurrencyManager>().Coins);
+		SaveSystem.Save(_ScoreTracker.BestScore, FindObjectOfType<PlayerWallet>().Coins);
 	}
 
 	public void PlayAgain() {
@@ -99,7 +99,7 @@ public class GameStateManager : MonoBehaviour {
 	}
 
 	private IEnumerator ContinueAfterFade() {
-		AudioManager.Instance.ResumeTrack(2);
+		AudioService.Instance.ResumeTrack(2);
 		IsGameRunning = true;
         IsGamePaused = false;
 		yield return FadeTransition("in");

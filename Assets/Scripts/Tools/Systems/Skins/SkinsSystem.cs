@@ -19,17 +19,17 @@ public class SkinsSystem : MonoBehaviour {
 	[SerializeField] private TMP_Text _unlockPhraseText;
 
 	private int _currentIndex = 0;
-	private CurrencyManager _currencyManager;
-	private ScoreManager _scoreManager;
+	private PlayerWallet _PlayerWallet;
+	private ScoreTracker _ScoreTracker;
 	private SkinAbility _currentAbility;
     private Renderer _playerRenderer; // Lo encontraremos automáticamente
 
-	private void OnEnable() => MainMenuController.OnChangeSkin += OnChangeSkin;
-	private void OnDisable() => MainMenuController.OnChangeSkin -= OnChangeSkin;
+	private void OnEnable() => MainMenuView.OnChangeSkin += OnChangeSkin;
+	private void OnDisable() => MainMenuView.OnChangeSkin -= OnChangeSkin;
 
 	private void Start() {
-		_currencyManager = FindObjectOfType<CurrencyManager>();
-		_scoreManager = FindObjectOfType<ScoreManager>();
+		_PlayerWallet = FindObjectOfType<PlayerWallet>();
+		_ScoreTracker = FindObjectOfType<ScoreTracker>();
         
         // --- LÍNEA NUEVA ---
         if (_playerObject != null) {
@@ -53,21 +53,21 @@ public class SkinsSystem : MonoBehaviour {
 
 
 	public void VerifyConditionForAmount() {
-		if (_currencyManager == null || _scoreManager == null) return;
+		if (_PlayerWallet == null || _ScoreTracker == null) return;
 		
 		Condition condition = _skins[_currentIndex].unlockCondition;
 		if (condition.conditionByAmount.isAmountCoin)
-			_unlockButton.enabled = condition.ConditionForAmountGreaterThanTarget(_currencyManager.Coins,
+			_unlockButton.enabled = condition.ConditionForAmountGreaterThanTarget(_PlayerWallet.Coins,
 				condition.conditionByAmount.targetAmount);
 		else
-			_unlockButton.enabled = condition.ConditionForAmountGreaterThanTarget(_scoreManager.BestScore,
+			_unlockButton.enabled = condition.ConditionForAmountGreaterThanTarget(_ScoreTracker.BestScore,
 				condition.conditionByAmount.targetAmount);
 	}
 
 	public void UnlockSkin() {
 		_skins[_currentIndex].unlockCondition.isUnlocked = true;
 		if (_skins[_currentIndex].unlockCondition.conditionByAmount.isAmountCoin)
-			_currencyManager?.SpendCoins(_skins[_currentIndex].unlockCondition.conditionByAmount.targetAmount);
+			_PlayerWallet?.SpendCoins(_skins[_currentIndex].unlockCondition.conditionByAmount.targetAmount);
 
 		ChangeUnlockGroupVisibility(false);
 		UpdateIsCurrentSkinUnlocked();

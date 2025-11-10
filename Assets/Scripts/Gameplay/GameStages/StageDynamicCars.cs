@@ -1,16 +1,16 @@
 using System;
 using UnityEngine;
 
-public class StageDynamicCars : IGameStage {
-	public void OnEnter(StageManager manager) {
-		AudioManager.Instance.ChangeSoundWithFade(Sound.Type.BGM1, 1);
-		manager.PrepareStageChange(GameManager.Stages.DynamicCars, true);
+public class StageDynamicCars : GameStage {
+	public void OnEnter(StageOrchestrator manager) {
+		AudioService.Instance.ChangeSoundWithFade(Sound.Type.BGM1, 1);
+		manager.PrepareStageChange(GameUtilities.Stages.DynamicCars, true);
 	}
 
-	public void OnUpdate(StageManager manager) {
+	public void OnUpdate(StageOrchestrator manager) {
 	}
 
-	public IGameStage CheckTransitions(StageManager manager) {
+	public GameStage CheckTransitions(StageOrchestrator manager) {
 		int currentShadowScore = manager.GetShadowScore();
 		int stage1Threshold = manager.GetStage1Threshold();
 		int stage2Threshold = manager.GetStage2Threshold();

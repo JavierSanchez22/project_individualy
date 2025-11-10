@@ -1,16 +1,16 @@
 using UnityEngine;
 
-public class ScoreManager : MonoBehaviour {
+public class ScoreTracker : MonoBehaviour {
 	public int Score { get; private set; }
 	public int BestScore { get; private set; }
 	public int ShadowScore { get; private set; }
 	
 	[SerializeField] private float _scoreRate = 1f;
 	private float _scoreTimer = 0f;
-	private GameStateManager _gameState;
+	private GameState _gameState;
 
 	private void Start() {
-		_gameState = FindObjectOfType<GameStateManager>();
+		_gameState = FindObjectOfType<GameState>();
 		GameEvents.OnUpdateScore += OnScoreUpdated;
 	}
 
@@ -20,7 +20,7 @@ public class ScoreManager : MonoBehaviour {
 
 	private void Update() {
 		if (_gameState.IsGamePlayable) {
-			GameManager.CallRepeating(IncreaseScore, ref _scoreTimer, _scoreRate);
+			GameUtilities.CallRepeating(IncreaseScore, ref _scoreTimer, _scoreRate);
 		}
 	}
 

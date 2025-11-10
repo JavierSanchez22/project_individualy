@@ -10,17 +10,17 @@ public class MoveLeftAndRepeat : MonoBehaviour {
 	private float _repeatWidth;
 	
 	private DifficultyManager _difficultyManager;
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	private void Start() {
 		_startPos = transform.position;
 		_repeatWidth = GetComponent<BoxCollider>().size.x / 2 - GetComponent<BoxCollider>().center.x;
 		_difficultyManager = FindObjectOfType<DifficultyManager>();
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
 	}
 
 	private void FixedUpdate() {
-		if (_gameStateManager == null || !_gameStateManager.IsGameRunning)
+		if (_GameState == null || !_GameState.IsGameRunning)
 			return;
 
 		transform.Translate(Vector3.left * _difficultyManager.PlayerSpeed * _customSpeed * Time.fixedDeltaTime, Space.World);

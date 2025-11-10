@@ -46,8 +46,8 @@ public static class SaveSystem {
 			stream.Close();
 
 			if (data != null) {
-				Object.FindObjectOfType<ScoreManager>()?.LoadBestScore(data.bestScore);
-				Object.FindObjectOfType<CurrencyManager>()?.LoadCoins(data.coins);
+				Object.FindObjectOfType<ScoreTracker>()?.LoadBestScore(data.bestScore);
+				Object.FindObjectOfType<PlayerWallet>()?.LoadCoins(data.coins);
 				GameEvents.InvokeAssignSaveData(data);
 			}
 		} else {
@@ -63,7 +63,7 @@ public static class SaveSystem {
 			stream.Close();
 
 			if (data != null) {
-				Object.FindObjectOfType<GraphicsManager>()?.LoadGraphicsSettings(data.isLowGraphics);
+				Object.FindObjectOfType<GraphicsSettings>()?.LoadGraphicsSettings(data.isLowGraphics);
 				GameEvents.InvokeUpdateVolume(1, data.bgmVolume);
 				GameEvents.InvokeUpdateVolume(2, data.sfxVolume);
 				GameEvents.InvokeUpdateVolume(3, data.bgmVolume);

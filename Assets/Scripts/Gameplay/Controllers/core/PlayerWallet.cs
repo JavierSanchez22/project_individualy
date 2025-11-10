@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class CurrencyManager : MonoBehaviour {
+public class PlayerWallet : MonoBehaviour {
 	public int Coins { get; private set; }
-	private ScoreManager _scoreManager;
+	private ScoreTracker _ScoreTracker;
 
 	private void Start() {
-		_scoreManager = FindObjectOfType<ScoreManager>();
+		_ScoreTracker = FindObjectOfType<ScoreTracker>();
 	}
 
 	public void LoadCoins(int loadedCoins) {
@@ -23,6 +23,6 @@ public class CurrencyManager : MonoBehaviour {
 			Coins = 0;
 		}
 		GameEvents.InvokeUpdateCoins(Coins);
-		SaveSystem.Save(_scoreManager.BestScore, Coins);
+		SaveSystem.Save(_ScoreTracker.BestScore, Coins);
 	}
 }

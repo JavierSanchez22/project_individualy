@@ -1,16 +1,16 @@
 using System;
 using UnityEngine;
 
-public class StageCarCrashAndCrystals : IGameStage {
-	public void OnEnter(StageManager manager) {
-		AudioManager.Instance.ChangeSoundWithFade(Sound.Type.BGM2, 1);
-		manager.PrepareStageChange(GameManager.Stages.CarCrashAndCrystals, false);
+public class StageCarCrashAndCrystals : GameStage {
+	public void OnEnter(StageOrchestrator manager) {
+		AudioService.Instance.ChangeSoundWithFade(Sound.Type.BGM2, 1);
+		manager.PrepareStageChange(GameUtilities.Stages.CarCrashAndCrystals, false);
 	}
 
-	public void OnUpdate(StageManager manager) {
+	public void OnUpdate(StageOrchestrator manager) {
 	}
 
-	public IGameStage CheckTransitions(StageManager manager) {
+	public GameStage CheckTransitions(StageOrchestrator manager) {
 		int currentShadowScore = manager.GetShadowScore();
 		int stage2Threshold = manager.GetStage2Threshold();
 		int remakeThreshold = manager.GetRemakeStageThreshold();

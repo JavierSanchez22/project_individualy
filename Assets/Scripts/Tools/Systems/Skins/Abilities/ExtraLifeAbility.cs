@@ -4,14 +4,14 @@ using UnityEngine;
 public class ExtraLifeAbility : SkinAbility {
 
 	public override void ApplyAbility(GameObject player) {
-		GameStateManager gsm = Object.FindObjectOfType<GameStateManager>();
+		GameState gsm = Object.FindObjectOfType<GameState>();
 		if (gsm != null) {
 			gsm.SetExtraLife(true);
 		}
 	}
 
 	public override void RemoveAbility(GameObject player) {
-		GameStateManager gsm = Object.FindObjectOfType<GameStateManager>();
+		GameState gsm = Object.FindObjectOfType<GameState>();
 		if (gsm != null) {
 			gsm.SetExtraLife(false);
 		}

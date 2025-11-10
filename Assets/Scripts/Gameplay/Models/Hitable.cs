@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Hitable : MonoBehaviour {
-	public static GameManager.Stages currentStage;
+	public static GameUtilities.Stages currentStage;
 
 	public float SpawnRate { get { return _spawnRate * _spawnRateMultiplier; } }
 
@@ -14,13 +14,13 @@ public abstract class Hitable : MonoBehaviour {
 	[SerializeField] private float _customSpeedMultiplier = 0f;
 
 	[Tooltip("The stage where the hitable will be spawned")]
-	[SerializeField] private GameManager.Stages _stage;
+	[SerializeField] private GameUtilities.Stages _stage;
 
 	[Tooltip("If the hitable has a secondary stage where will also be spawned")]
 	[SerializeField] private bool _hasSecondaryStage = false;
 
 	[Tooltip("The secondary stage where the hitable will be spawned if enabled")]
-	[SerializeField] private GameManager.Stages _secondaryStage;
+	[SerializeField] private GameUtilities.Stages _secondaryStage;
 
 	[Tooltip("The percentage chance of actually spawning that hitable")]
 	[Range(0f, 1f)]
@@ -31,18 +31,18 @@ public abstract class Hitable : MonoBehaviour {
 	private Rigidbody _rigidbody;
 	private float _spawnRate = 1f;
 	private DifficultyManager _difficultyManager;
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	private void OnEnable() => SetSpawnRate();
 
 	private void Start() {
 		_rigidbody = GetComponent<Rigidbody>();
 		_difficultyManager = FindObjectOfType<DifficultyManager>();
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
 	}
 
 	private void FixedUpdate() {
-		if (_gameStateManager != null && _gameStateManager.IsGameRunning) {
+		if (_GameState != null && _GameState.IsGameRunning) {
 			Vector3 direction = Vector3.left * (_difficultyManager.PlayerSpeed + _customSpeedMultiplier) * Time.fixedDeltaTime;
 			Vector3 position = transform.position + direction;
 			_rigidbody.MovePosition(position);
@@ -63,7 +63,7 @@ public abstract class Hitable : MonoBehaviour {
 		else
 			_spawnRate = 0f;
 
-		if (_stage == GameManager.Stages.EveryStage)
+		if (_stage == GameUtilities.Stages.EveryStage)
 			_spawnRate = 1f;
 	}
 }

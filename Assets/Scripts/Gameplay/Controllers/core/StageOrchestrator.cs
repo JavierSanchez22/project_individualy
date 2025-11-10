@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class StageManager : MonoBehaviour {
-	public GameManager.Stages CurrentStageEnum { get; private set; } = GameManager.Stages.GameNotStarted;
-	private IGameStage _currentStage;
-	private GameStateManager _gameState;
-	private ScoreManager _scoreManager;
+public class StageOrchestrator : MonoBehaviour {
+	public GameUtilities.Stages CurrentStageEnum { get; private set; } = GameUtilities.Stages.GameNotStarted;
+	private GameStage _currentStage;
+	private GameState _gameState;
+	private ScoreTracker _ScoreTracker;
 	
 	[Header("Stage Settings")]
 	[SerializeField] private int _stage1Threshold = 60;
@@ -25,19 +25,19 @@ public class StageManager : MonoBehaviour {
 	[Tooltip("Duration in seconds to blend from one skybox to another")]
 	[SerializeField] private float _skyboxBlendDuration = 2f;
 
-	private GameManager.Stages _lastStageEnum = GameManager.Stages.GameNotStarted;
+	private GameUtilities.Stages _lastStageEnum = GameUtilities.Stages.GameNotStarted;
 	private bool _canUpdateSkybox = false;
 	private bool _hasSwapedBridges = false;
 	private bool _canSwapBridges = false;
 	private float _skyboxLerpFactor = 0f;
 	private int _lastStageIndex = 0;
 
-	private void OnEnable() => PlayerController.OnReachedSwapPoint += SwapBridge;
-	private void OnDisable() => PlayerController.OnReachedSwapPoint -= SwapBridge;
+	private void OnEnable() => PlayerCoordinat.OnReachedSwapPoint += SwapBridge;
+	private void OnDisable() => PlayerCoordinat.OnReachedSwapPoint -= SwapBridge;
 
 	private void Start() {
-		_gameState = FindObjectOfType<GameStateManager>();
-		_scoreManager = FindObjectOfType<ScoreManager>();
+		_gameState = FindObjectOfType<GameState>();
+		_ScoreTracker = FindObjectOfType<ScoreTracker>();
 		
 		InitializeReset();
 		
@@ -66,7 +66,7 @@ public class StageManager : MonoBehaviour {
 		if (_currentStage == null)
 			return; // Si el estado es nulo, no hagas nada.
 
-		IGameStage nextStage = _currentStage.CheckTransitions(this);
+		GameStage nextStage = _currentStage.CheckTransitions(this);
 		
 		if (nextStage != null && nextStage.GetType() != _currentStage.GetType()) {
 			_lastStageEnum = CurrentStageEnum;
@@ -77,7 +77,7 @@ public class StageManager : MonoBehaviour {
 		_currentStage?.OnUpdate(this);
 	}
 
-	public void PrepareStageChange(GameManager.Stages newStage, bool canSwapBridges) {
+	public void PrepareStageChange(GameUtilities.Stages newStage, bool canSwapBridges) {
 		_hasSwapedBridges = false;
 		_canSwapBridges = canSwapBridges;
 		CurrentStageEnum = newStage;
@@ -86,19 +86,19 @@ public class StageManager : MonoBehaviour {
 
 		Hitable.currentStage = CurrentStageEnum;
 		
-		SpawnManager sm = FindObjectOfType<SpawnManager>();
+		HitableSpawner sm = FindObjectOfType<HitableSpawner>();
 		if (sm != null) {
 			sm.repeatRate = 3f;
 		}
 
-		if (_lastStageEnum != GameManager.Stages.GameNotStarted) {
+		if (_lastStageEnum != GameUtilities.Stages.GameNotStarted) {
 			_canUpdateSkybox = true;
 			HandleWater();
 		}
 	}
 
-	public void SetHitableStage(GameManager.Stages stage) => Hitable.currentStage = stage;
-	public int GetShadowScore() => _scoreManager?.ShadowScore ?? 0;
+	public void SetHitableStage(GameUtilities.Stages stage) => Hitable.currentStage = stage;
+	public int GetShadowScore() => _ScoreTracker?.ShadowScore ?? 0;
 	public int GetStage1Threshold() => _stage1Threshold;
 	public int GetStage2Threshold() => _stage2Threshold;
 	public int GetRemakeStageThreshold() => _remakeStageThreshold;
@@ -183,11 +183,11 @@ public class StageManager : MonoBehaviour {
 
 	private void SwapBridge() {
 		if (!_hasSwapedBridges && _canSwapBridges) {
-			if (CurrentStageEnum == GameManager.Stages.BridgeCollapse) {
+			if (CurrentStageEnum == GameUtilities.Stages.BridgeCollapse) {
 				if (_bridgeCommon != null) _bridgeCommon.SetActive(false);
 				if (_bridgeDamaged != null) _bridgeDamaged.SetActive(true);
 			}
-			else if (CurrentStageEnum == GameManager.Stages.DynamicCars){
+			else if (CurrentStageEnum == GameUtilities.Stages.DynamicCars){
 				if (_bridgeCommon != null) _bridgeCommon.SetActive(true);
 				if (_bridgeDamaged != null) _bridgeDamaged.SetActive(false);
 			}
@@ -196,8 +196,8 @@ public class StageManager : MonoBehaviour {
 	}
 	
 	public void RemakeStages() {
-		if(_scoreManager != null)
-			_scoreManager.ResetShadowScore();
+		if(_ScoreTracker != null)
+			_ScoreTracker.ResetShadowScore();
 			
 		_stage1Threshold += 30;
 		_stage2Threshold += 30;

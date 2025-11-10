@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour {
+public class CameraFollow : MonoBehaviour {
 	[Tooltip("The amount of smootheness for the camera movement")]
 	[SerializeField] private float _smoothTime = .3f;
 
@@ -11,25 +11,25 @@ public class CameraController : MonoBehaviour {
 
 	private Vector3 _targetPosition = Vector3.zero;
 	private Vector3 _velocity = Vector3.zero;
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	private void OnEnable() {
-		PlayerController.OnInvertedPosition += InvertCamera;
-		PlayerController.OnShouldResetCamera += ResetCamera;
+		PlayerCoordinat.OnInvertedPosition += InvertCamera;
+		PlayerCoordinat.OnShouldResetCamera += ResetCamera;
 	}
 
 	private void OnDisable() {
-		PlayerController.OnInvertedPosition -= InvertCamera;
-		PlayerController.OnShouldResetCamera -= ResetCamera;
+		PlayerCoordinat.OnInvertedPosition -= InvertCamera;
+		PlayerCoordinat.OnShouldResetCamera -= ResetCamera;
 	}
 
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
 		ResetTarget();
 	}
 
 	private void Update() {
-		if (_gameStateManager != null && _gameStateManager.IsGameRunning)
+		if (_GameState != null && _GameState.IsGameRunning)
 			transform.position = Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, _smoothTime);
 	}
 

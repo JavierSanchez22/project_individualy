@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour {
     private float _currentJumpMultiplier = 1f;
     private float _currentJumpForce => _baseJumpForce * _currentJumpMultiplier;
 
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	public event Action OnLanded;
 
@@ -53,12 +53,12 @@ public class PlayerMovement : MonoBehaviour {
 	}
 	
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
 		ResetPlayerPhysics();
 	}
 
 	private void FixedUpdate() {
-		if (_gameStateManager == null || !_gameStateManager.IsGamePlayable)
+		if (_GameState == null || !_GameState.IsGamePlayable)
 			return;
 
 		HandleGravity();
@@ -89,15 +89,15 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	private void Jump() {
-		if (_jumps > 0 && _gameStateManager.IsGamePlayable) {
+		if (_jumps > 0 && _GameState.IsGamePlayable) {
 			_rigidbody.velocity = Vector3.up * _currentJumpForce * _gravityDirection;
-			AudioManager.Instance.PlaySoundOneShot(Sound.Type.Jump, 2);
+			AudioService.Instance.PlaySoundOneShot(Sound.Type.Jump, 2);
 			_jumps--;
 		}
 	}
 
 	private void Switch() {
-		if (IsGrounded && _gameStateManager.IsGamePlayable) {
+		if (IsGrounded && _GameState.IsGamePlayable) {
 			InvertPosition();
 		}
 	}
@@ -159,10 +159,10 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	private void InvertPosition() {
-		AudioManager.Instance.PlaySoundOneShot(Sound.Type.Switch, 2);
+		AudioService.Instance.PlaySoundOneShot(Sound.Type.Switch, 2);
 		transform.Rotate(new Vector3(0, 0, 180), Space.Self);
 		transform.position = new Vector3(transform.position.x, transform.position.y * -1, transform.position.z);
-		if (_gameStateManager.IsGamePlayable)
+		if (_GameState.IsGamePlayable)
 			InvertGravity();
 		RechargeJumps();
 	}
@@ -205,7 +205,7 @@ public class PlayerMovement : MonoBehaviour {
 	}
     
 	private void ResetPositionAndRotation() {
-        PlayerController pc = FindObjectOfType<PlayerController>();
+        PlayerCoordinat pc = FindObjectOfType<PlayerCoordinat>();
 		if (pc != null) {
 			pc.ResetPositionAndRotation();
 		}

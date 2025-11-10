@@ -15,7 +15,7 @@ public class PlayerVisuals : MonoBehaviour {
 	private List<Material> _materials = new List<Material>();
 	private bool _canTeleport = true;
 	private float _idleAnimationsTimer = 0;
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	public void Initialize(PlayerInput input, PlayerMovement movement) {
 		// Suscribirse a los eventos de Input y Movimiento
@@ -45,12 +45,12 @@ public class PlayerVisuals : MonoBehaviour {
 	}
 	
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
 	}
 
 	private void Update() {
-		if (_gameStateManager != null && !_gameStateManager.IsGameRunning)
-			GameManager.CallRepeating(HandleIdleAnimation, ref _idleAnimationsTimer, _idleAnimationRepeatRate);
+		if (_GameState != null && !_GameState.IsGameRunning)
+			GameUtilities.CallRepeating(HandleIdleAnimation, ref _idleAnimationsTimer, _idleAnimationRepeatRate);
 	}
 
     // --- MÉTODOS DE EVENTOS "BLINDADOS" ---
@@ -89,7 +89,7 @@ public class PlayerVisuals : MonoBehaviour {
 	}
 
 	private void StartDissolving() {
-		if (PlayerMovement.IsGrounded && _canTeleport && _gameStateManager.IsGamePlayable) {
+		if (PlayerMovement.IsGrounded && _canTeleport && _GameState.IsGamePlayable) {
 			StartCoroutine(DissolveDown());
 		}
 	}
@@ -104,7 +104,7 @@ public class PlayerVisuals : MonoBehaviour {
 		}
 		yield return null;
 		
-		PlayerController pc = FindObjectOfType<PlayerController>();
+		PlayerCoordinat pc = FindObjectOfType<PlayerCoordinat>();
 		if (pc != null) {
 			pc.InvokeInvertedPosition();
 		}

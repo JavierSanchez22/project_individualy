@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour {
 	[SerializeField] private GameObject _gameOverMenu;
     [SerializeField] private GameObject _loadingScreen;
 
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	private void OnEnable() {
 		GameEvents.OnPlay += OnPlay;
@@ -28,7 +28,7 @@ public class UIManager : MonoBehaviour {
 	}
 
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
         
         // El Start AHORA ESTÁ CASI VACÍO.
         // El Bootstrapper tiene el control.
@@ -50,8 +50,8 @@ public class UIManager : MonoBehaviour {
     }
 	
 	private void Update() {
-		if (_gameStateManager != null) {
-			_gameUI.SetActive(_gameStateManager.IsGameRunning);
+		if (_GameState != null) {
+			_gameUI.SetActive(_GameState.IsGameRunning);
 		}
 	}
 
@@ -59,15 +59,15 @@ public class UIManager : MonoBehaviour {
 
 	private void OnPause() {
 		SetMenusVisibility(false, true, false);
-		if (_gameStateManager != null && !_gameStateManager.IsGameRunning)
+		if (_GameState != null && !_GameState.IsGameRunning)
 			SetMenuVisibility(_initMenu, true);
 	}
 
 	private void OnResume() {
-		if (_gameStateManager != null) {
-			if (_gameStateManager.IsGamePaused)
+		if (_GameState != null) {
+			if (_GameState.IsGamePaused)
 				SetMenuVisibility(_initMenu, false);
-			else if (!_gameStateManager.IsGameRunning)
+			else if (!_GameState.IsGameRunning)
 				SetMenuVisibility(_initMenu, true);
 		}
 		SetMenuVisibility(_pauseMenu, false);

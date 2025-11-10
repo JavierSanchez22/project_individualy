@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Rendering;
 
-public class GraphicsManager : MonoBehaviour {
+public class GraphicsSettings : MonoBehaviour {
 	public bool IsCurrentlyLowGraphics { get; private set; }
 
 	[Header("Quality Settings")]
@@ -14,16 +14,16 @@ public class GraphicsManager : MonoBehaviour {
 	[Header("Water References")]
 	[SerializeField] private List<GameObject> _waters = new List<GameObject>();
 
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	private void Awake() {
 		LimitFrameRate();
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
 	}
 	
 	private void Start()
 	{
-		// Esta llamada se movió desde Awake porque _gameStateManager puede no estar listo
+		// Esta llamada se movió desde Awake porque _GameState puede no estar listo
 		SettingsSaveData settingsData = SaveSystem.LoadSettings();
 		if (settingsData != null)
 		{
@@ -49,12 +49,12 @@ public class GraphicsManager : MonoBehaviour {
 	}
 
 	private IEnumerator ChangeAndAssignQuality() {
-		yield return _gameStateManager.FadeTransition("out");
+		yield return _GameState.FadeTransition("out");
 
 		IsCurrentlyLowGraphics = !IsCurrentlyLowGraphics;
 		AssignQuality();
 
-		yield return _gameStateManager.FadeTransition("in");
+		yield return _GameState.FadeTransition("in");
 	}
 
 	private void ChangeQualityToLow() {

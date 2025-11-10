@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class InGameUIController : MonoBehaviour {
+public class GamePlayHUD : MonoBehaviour {
 
 	[Header("Components")]
 	[SerializeField] private TMP_Text _scoreText;
@@ -10,7 +10,7 @@ public class InGameUIController : MonoBehaviour {
 	[SerializeField] private GameObject _switch;
 	[SerializeField] private GameObject _jump;
 
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	private void OnEnable() {
 		GameEvents.OnUpdateScore += UpdateScore;
@@ -29,12 +29,12 @@ public class InGameUIController : MonoBehaviour {
 	}
 
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
 	}
 
 	private void Update() {
-		if (_gameStateManager == null) return;
-		HandleButtonsInteractibility(_gameStateManager.IsGamePaused);
+		if (_GameState == null) return;
+		HandleButtonsInteractibility(_GameState.IsGamePaused);
 	}
 	
 	private void UpdateScore(int score) {

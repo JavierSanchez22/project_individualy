@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
-public class SpawnManager : MonoBehaviour {
+public class HitableSpawner : MonoBehaviour {
 	[Tooltip("The hitable prefab")]
 	[SerializeField] private Hitable[] _hitablePrefabs;
 
@@ -19,10 +19,10 @@ public class SpawnManager : MonoBehaviour {
 	private float _timer = 0f;
 	private bool _isSelectingPool = true;
 
-	private GameStateManager _gameStateManager;
+	private GameState _GameState;
 
 	private void Start() {
-		_gameStateManager = FindObjectOfType<GameStateManager>();
+		_GameState = FindObjectOfType<GameState>();
 
 		foreach (Hitable hitablePrefab in _hitablePrefabs)
 			_pools.Add(new ObjectPool<Hitable>(() => CreateHitable(hitablePrefab), OnGetHitableFromPool, OnReleaseHitableToPool,
@@ -32,8 +32,8 @@ public class SpawnManager : MonoBehaviour {
 	}
 
 	private void Update() {
-		if (_gameStateManager.IsGameRunning)
-			GameManager.CallRepeating(SpawnHitable, ref _timer, repeatRate);
+		if (_GameState.IsGameRunning)
+			GameUtilities.CallRepeating(SpawnHitable, ref _timer, repeatRate);
 	}
 
 	private Hitable CreateHitable(Hitable hitablePrefab) {
@@ -75,7 +75,7 @@ public class SpawnManager : MonoBehaviour {
 
 		if (audioSources != null && audioSources.Length != 0) {
 			foreach (AudioSource audioSource in audioSources) {
-				float obstacleVolume = AudioManager.Instance.GetTrackVolume(2) == 0 ? 0 : AudioManager.Instance.GetTrackVolume(2) + .2f;
+				float obstacleVolume = AudioService.Instance.GetTrackVolume(2) == 0 ? 0 : AudioService.Instance.GetTrackVolume(2) + .2f;
 				audioSource.volume = obstacleVolume;
 			}
 		}
